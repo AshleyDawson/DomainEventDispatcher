@@ -1,6 +1,8 @@
 Domain Event Dispatcher
 =======================
 
+[![Build Status](https://travis-ci.org/AshleyDawson/DomainEventDispatcher.svg?branch=master)](https://travis-ci.org/AshleyDawson/DomainEventDispatcher)
+
 Singleton domain event dispatcher to be used during [DDD](https://en.wikipedia.org/wiki/Domain-driven_design). The domain 
 event dispatcher is a singleton so it can be easily used from within your model.
 

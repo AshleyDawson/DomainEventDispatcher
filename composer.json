@@ -1,0 +1,32 @@
+{
+  "name": "ashleydawson/domain-event-dispatcher",
+  "type": "library",
+  "description": "Dispatch or defer domain events from a singleton. Handy if you're using DDD and need a singleton domain dispatcher for models.",
+  "license": "MIT",
+  "keywords": [
+    "ddd",
+    "domain",
+    "event",
+    "dispatcher",
+    "listener",
+    "subscriber"
+  ],
+  "authors": [
+    {
+      "name": "Ashley Dawson",
+      "email": "ashley@ashleydawson.co.uk"
+    }
+  ],
+  "require": {
+    "php": ">=5.5"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^4.0"
+  },
+  "autoload": {
+    "psr-4": { "AshleyDawson\\DomainEventDispatcher\\": "lib" }
+  },
+  "config": {
+    "bin-dir": "bin"
+  }
+}

@@ -6,8 +6,10 @@ use AshleyDawson\DomainEventDispatcher\DomainEventDispatcher;
 use AshleyDawson\DomainEventDispatcher\Test\Dummy\InvalidEventListenerNoInvoke;
 use AshleyDawson\DomainEventDispatcher\Test\Dummy\InvalidEventListenerTooManyArguments;
 use AshleyDawson\DomainEventDispatcher\Test\Dummy\ValidEvent;
+use AshleyDawson\DomainEventDispatcher\Test\Dummy\ValidEventTwo;
 use AshleyDawson\DomainEventDispatcher\Test\Dummy\ValidGeneralEventListener;
 use AshleyDawson\DomainEventDispatcher\Test\Dummy\ValidTypedEventListener;
+use AshleyDawson\DomainEventDispatcher\Test\Dummy\ValidTypedEventListenerTwo;
 
 /**
  * Class DomainEventDispatcherTest
@@ -265,6 +267,91 @@ class DomainEventDispatcherTest extends \PHPUnit_Framework_TestCase
         DomainEventDispatcher::getInstance()->dispatchDeferred();
 
         $this->assertEquals(2, InvocationRegister::getInvocationCount(ValidTypedEventListener::class));
+    }
+
+    /**
+     * @test
+     */
+    public function dispatch_mixture_of_typed_events()
+    {
+        DomainEventDispatcher::getInstance()->addListener(
+            new ValidTypedEventListener()
+        );
+
+        DomainEventDispatcher::getInstance()->addListener(
+            new ValidTypedEventListenerTwo()
+        );
+
+        DomainEventDispatcher::getInstance()->dispatch(
+            new ValidEvent()
+        );
+
+        DomainEventDispatcher::getInstance()->dispatch(
+            new ValidEventTwo()
+        );
+
+        $this->assertEquals(1, InvocationRegister::getInvocationCount(ValidTypedEventListener::class));
+        $this->assertEquals(1, InvocationRegister::getInvocationCount(ValidTypedEventListenerTwo::class));
+    }
+
+    /**
+     * @test
+     */
+    public function defer_mixture_of_typed_events()
+    {
+        DomainEventDispatcher::getInstance()->addListener(
+            new ValidTypedEventListener()
+        );
+
+        DomainEventDispatcher::getInstance()->addListener(
+            new ValidTypedEventListenerTwo()
+        );
+
+        DomainEventDispatcher::getInstance()->defer(
+            new ValidEvent()
+        );
+
+        DomainEventDispatcher::getInstance()->defer(
+            new ValidEventTwo()
+        );
+
+        $this->assertEquals(0, InvocationRegister::getInvocationCount(ValidTypedEventListener::class));
+        $this->assertEquals(0, InvocationRegister::getInvocationCount(ValidTypedEventListenerTwo::class));
+
+        DomainEventDispatcher::getInstance()->dispatchDeferred();
+
+        $this->assertEquals(1, InvocationRegister::getInvocationCount(ValidTypedEventListener::class));
+        $this->assertEquals(1, InvocationRegister::getInvocationCount(ValidTypedEventListenerTwo::class));
+    }
+
+    /**
+     * @test
+     */
+    public function dispatch_and_defer_mixture_of_typed_events()
+    {
+        DomainEventDispatcher::getInstance()->addListener(
+            new ValidTypedEventListener()
+        );
+
+        DomainEventDispatcher::getInstance()->addListener(
+            new ValidTypedEventListenerTwo()
+        );
+
+        DomainEventDispatcher::getInstance()->dispatch(
+            new ValidEvent()
+        );
+
+        DomainEventDispatcher::getInstance()->defer(
+            new ValidEventTwo()
+        );
+
+        $this->assertEquals(1, InvocationRegister::getInvocationCount(ValidTypedEventListener::class));
+        $this->assertEquals(0, InvocationRegister::getInvocationCount(ValidTypedEventListenerTwo::class));
+
+        DomainEventDispatcher::getInstance()->dispatchDeferred();
+
+        $this->assertEquals(1, InvocationRegister::getInvocationCount(ValidTypedEventListener::class));
+        $this->assertEquals(1, InvocationRegister::getInvocationCount(ValidTypedEventListenerTwo::class));
     }
 
     /**

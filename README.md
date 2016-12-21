@@ -74,8 +74,10 @@ DomainEventDispatcher::getInstance()->dispatch(
 Listener Types
 --------------
 
-There are two types of listeners, `general` and `typed`. A `general` listener is invoked by **any** domain event and a
-`typed` listener is invoked by events of a corresponding type.
+There are two types of listeners:
+
+ * `General` - invoked by **any** domain event.
+ * `Typed` - invoked by events of a corresponding type.
 
 General Listener
 -----------------

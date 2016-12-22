@@ -26,7 +26,7 @@ class EventInvocationMapEventListenerSet
     private $event;
 
     /**
-     * @var object[]
+     * @var EventInvocationMapEventListener[]
      */
     private $listeners = [];
 
@@ -35,16 +35,25 @@ class EventInvocationMapEventListenerSet
      *
      * @param bool $isDeferred
      * @param object $event
-     * @param \object[] $listeners
      */
-    public function __construct($isDeferred, $event, array $listeners)
+    public function __construct($isDeferred, $event)
     {
         $this->event = $event;
-        $this->listeners = $listeners;
+        $this->listeners = [];
 
         $this->disposition = $isDeferred
             ? self::DISPOSITION_DEFERRED
             : self::DISPOSITION_IMMEDIATE;
+    }
+
+    /**
+     * Add listener
+     *
+     * @param EventInvocationMapEventListener $listener
+     */
+    public function addListener(EventInvocationMapEventListener $listener)
+    {
+        $this->listeners[] = $listener;
     }
 
     /**

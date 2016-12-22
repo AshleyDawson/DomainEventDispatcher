@@ -128,17 +128,22 @@ class DomainEventDispatcher implements DomainEventDispatcherInterface
      */
     protected function performDispatch(array $listeners, $event, $isDeferred)
     {
+        $set = new EventInvocationMapEventListenerSet(
+            $isDeferred,
+            $event
+        );
+
         foreach ($listeners as $listener) {
+            $start = microtime(true);
             $listener($event);
+            $elapsed = microtime(true) - $start;
+
+            $set->addListener(
+                new EventInvocationMapEventListener($listener, $elapsed)
+            );
         }
 
-        $this->eventInvocationMap->addEventListenerPair(
-            new EventInvocationMapEventListenerSet(
-                $isDeferred,
-                $event,
-                $listeners
-            )
-        );
+        $this->eventInvocationMap->addEventListenerSet($set);
     }
 
     /**

@@ -17,11 +17,11 @@ class EventInvocationMap
     private $sets = [];
 
     /**
-     * Add event listener pair
+     * Add event listener set
      *
      * @param EventInvocationMapEventListenerSet $eventListenerSet
      */
-    public function addEventListenerPair(EventInvocationMapEventListenerSet $eventListenerSet)
+    public function addEventListenerSet(EventInvocationMapEventListenerSet $eventListenerSet)
     {
         $this->sets[] = $eventListenerSet;
     }

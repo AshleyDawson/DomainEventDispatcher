@@ -3,6 +3,7 @@
 namespace AshleyDawson\DomainEventDispatcher\Test;
 
 use AshleyDawson\DomainEventDispatcher\DomainEventDispatcher;
+use AshleyDawson\DomainEventDispatcher\EventInvocationMapEventListenerSet;
 use AshleyDawson\DomainEventDispatcher\Test\Dummy\InvalidEventListenerNoInvoke;
 use AshleyDawson\DomainEventDispatcher\Test\Dummy\InvalidEventListenerTooManyArguments;
 use AshleyDawson\DomainEventDispatcher\Test\Dummy\ValidEvent;
@@ -352,6 +353,39 @@ class DomainEventDispatcherTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(1, InvocationRegister::getInvocationCount(ValidTypedEventListener::class));
         $this->assertEquals(1, InvocationRegister::getInvocationCount(ValidTypedEventListenerTwo::class));
+    }
+
+    /**
+     * @test
+     */
+    public function produces_invocation_map_for_mixed_events_and_listeners()
+    {
+        DomainEventDispatcher::getInstance()->addListener(
+            new ValidTypedEventListener()
+        );
+
+        DomainEventDispatcher::getInstance()->addListener(
+            new ValidTypedEventListenerTwo()
+        );
+
+        DomainEventDispatcher::getInstance()->dispatch(
+            new ValidEvent()
+        );
+
+        DomainEventDispatcher::getInstance()->defer(
+            new ValidEventTwo()
+        );
+
+        $this->assertEquals(1, InvocationRegister::getInvocationCount(ValidTypedEventListener::class));
+        $this->assertEquals(0, InvocationRegister::getInvocationCount(ValidTypedEventListenerTwo::class));
+
+        DomainEventDispatcher::getInstance()->dispatchDeferred();
+
+        $this->assertEquals(1, InvocationRegister::getInvocationCount(ValidTypedEventListener::class));
+        $this->assertEquals(1, InvocationRegister::getInvocationCount(ValidTypedEventListenerTwo::class));
+
+        $this->assertCount(2, $sets = DomainEventDispatcher::getInstance()->getEventInvocationMap()->getSets());
+        $this->assertGreaterThan(0, count(array_map(function (EventInvocationMapEventListenerSet $set) { return $set->getListeners(); }, $sets)));
     }
 
     /**

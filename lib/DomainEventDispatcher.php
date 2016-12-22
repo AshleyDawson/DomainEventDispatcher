@@ -25,6 +25,11 @@ class DomainEventDispatcher implements DomainEventDispatcherInterface
     private $deferredEvents = [];
 
     /**
+     * @var EventInvocationMap
+     */
+    private $eventInvocationMap;
+
+    /**
      * @return self
      */
     public static function getInstance()
@@ -61,7 +66,8 @@ class DomainEventDispatcher implements DomainEventDispatcherInterface
     {
         $this->performDispatch(
             $this->getListenersForEvent($event),
-            $event
+            $event,
+            false
         );
     }
 
@@ -81,9 +87,18 @@ class DomainEventDispatcher implements DomainEventDispatcherInterface
         foreach ($this->deferredEvents as $event) {
             $this->performDispatch(
                 $this->getListenersForEvent($event),
-                $event
+                $event,
+                true
             );
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEventInvocationMap()
+    {
+        return $this->eventInvocationMap;
     }
 
     /**
@@ -109,12 +124,21 @@ class DomainEventDispatcher implements DomainEventDispatcherInterface
      *
      * @param array $listeners
      * @param object $event
+     * @param bool $isDeferred Are the events deferred events
      */
-    protected function performDispatch(array $listeners, $event)
+    protected function performDispatch(array $listeners, $event, $isDeferred)
     {
         foreach ($listeners as $listener) {
             $listener($event);
         }
+
+        $this->eventInvocationMap->addEventListenerPair(
+            new EventInvocationMapEventListenerSet(
+                $isDeferred,
+                $event,
+                $listeners
+            )
+        );
     }
 
     /**
@@ -190,5 +214,6 @@ class DomainEventDispatcher implements DomainEventDispatcherInterface
      */
     final protected function __construct()
     {
+        $this->eventInvocationMap = new EventInvocationMap();
     }
 }

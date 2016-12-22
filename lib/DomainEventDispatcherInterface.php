@@ -34,4 +34,12 @@ interface DomainEventDispatcherInterface
      * Dispatch the deferred events
      */
     public function dispatchDeferred();
+
+    /**
+     * Get the event invocation map detailing which listeners were invoked
+     * against each event
+     *
+     * @return EventInvocationMap
+     */
+    public function getEventInvocationMap();
 }

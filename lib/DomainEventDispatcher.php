@@ -30,6 +30,11 @@ class DomainEventDispatcher implements DomainEventDispatcherInterface
     private $eventInvocationMap;
 
     /**
+     * @var array
+     */
+    private $listenerTypes = [];
+
+    /**
      * @return self
      */
     public static function getInstance()
@@ -139,7 +144,11 @@ class DomainEventDispatcher implements DomainEventDispatcherInterface
             $elapsed = (microtime(true) * 1000000) - $start;
 
             $set->addListener(
-                new EventInvocationMapEventListener($listener, $elapsed)
+                new EventInvocationMapEventListener(
+                    ($this->getListenerEventType($listener) !== null),
+                    $listener,
+                    $elapsed
+                )
             );
         }
 
@@ -154,6 +163,12 @@ class DomainEventDispatcher implements DomainEventDispatcherInterface
      */
     protected function getListenerEventType($listener)
     {
+        $class = get_class($listener);
+
+        if (isset($this->listenerTypes[$class])) {
+            return $this->listenerTypes[$class];
+        }
+
         $parameters = (new \ReflectionObject($listener))
             ->getMethod('__invoke')
             ->getParameters();
@@ -173,7 +188,7 @@ class DomainEventDispatcher implements DomainEventDispatcherInterface
             ->getClass()
             ->getName();
 
-        return class_exists($typeHint)
+        return $this->listenerTypes[$class] = class_exists($typeHint)
             ? $typeHint
             : null;
     }

@@ -10,6 +10,11 @@ namespace AshleyDawson\DomainEventDispatcher;
 class EventInvocationMapEventListener
 {
     /**
+     * @var bool
+     */
+    private $isTyped = false;
+
+    /**
      * @var object
      */
     private $listener;
@@ -22,13 +27,15 @@ class EventInvocationMapEventListener
     /**
      * Constructor
      *
+     * @param bool $isTyped
      * @param object $listener
      * @param mixed $executionTimeInMicroseconds
      */
-    public function __construct($listener, $executionTimeInMicroseconds)
+    public function __construct($isTyped, $listener, $executionTimeInMicroseconds)
     {
         $this->listener = $listener;
         $this->executionTimeInMicroseconds = $executionTimeInMicroseconds;
+        $this->isTyped = $isTyped;
     }
 
     /**
@@ -49,5 +56,15 @@ class EventInvocationMapEventListener
     public function getExecutionTimeInMicroseconds()
     {
         return $this->executionTimeInMicroseconds;
+    }
+
+    /**
+     * Get isTyped
+     *
+     * @return boolean
+     */
+    public function getIsTyped()
+    {
+        return $this->isTyped;
     }
 }

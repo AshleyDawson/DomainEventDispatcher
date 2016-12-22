@@ -134,9 +134,9 @@ class DomainEventDispatcher implements DomainEventDispatcherInterface
         );
 
         foreach ($listeners as $listener) {
-            $start = microtime(true);
+            $start = microtime();
             $listener($event);
-            $elapsed = microtime(true) - $start;
+            $elapsed = microtime() - $start;
 
             $set->addListener(
                 new EventInvocationMapEventListener($listener, $elapsed)

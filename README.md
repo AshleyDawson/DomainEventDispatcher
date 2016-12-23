@@ -151,6 +151,58 @@ DomainEventDispatcher::getInstance()->defer(
 DomainEventDispatcher::getInstance()->dispatchDeferred();
 ```
 
+Domain Event Storage
+--------------------
+
+For event publication, notification or auditing purposes you may need to store events in an event store. To do this, simply
+implement the `EventStoreInterface`:
+
+```php
+<?php
+
+namespace Acme\DomainEventStorage;
+
+use AshleyDawson\DomainEventDispatcher\EventStorage\EventStoreInterface;
+
+class InMemoryEventStore implements EventStoreInterface
+{
+    private $events = [];
+
+    public function append($event)
+    {
+        $this->events[] = $event;
+    }
+}
+```
+
+Then, configure the event dispatcher to use the event store:
+
+```php
+<?php
+
+use AshleyDawson\DomainEventDispatcher\DomainEventDispatcher;
+use Acme\DomainEventStorage\InMemoryEventStore;
+
+DomainEventDispatcher::getInstance()->setEventStore(
+    new InMemoryEventStore()
+);
+```
+
+**Important:** If configured with an event store, the event dispatcher will attempt to store **every event**. If you don't
+want the event dispatcher to store a particular event, implement `DisposableEventInterface` on the event:
+
+```php
+<?php
+
+namespace Acme\Event;
+
+use AshleyDawson\DomainEventDispatcher\EventStorage\DisposableEventInterface;
+
+class MyDisposableEvent implements DisposableEventInterface
+{
+}
+```
+
 Tests
 -----
 

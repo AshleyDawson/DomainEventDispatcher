@@ -175,7 +175,7 @@ class InMemoryEventStore implements EventStoreInterface
 }
 ```
 
-Then, configure the event dispatcher to use the event store:
+Then configure the event dispatcher to use the event store:
 
 ```php
 <?php

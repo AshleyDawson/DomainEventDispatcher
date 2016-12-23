@@ -2,6 +2,13 @@
 
 namespace AshleyDawson\DomainEventDispatcher;
 
+use AshleyDawson\DomainEventDispatcher\EventInvocationMap\EventInvocationMap;
+use AshleyDawson\DomainEventDispatcher\EventInvocationMap\EventInvocationMapEventListener;
+use AshleyDawson\DomainEventDispatcher\EventInvocationMap\EventInvocationMapEventListenerSet;
+use AshleyDawson\DomainEventDispatcher\EventStorage\DisposableEventInterface;
+use AshleyDawson\DomainEventDispatcher\EventStorage\EventStoreInterface;
+use AshleyDawson\DomainEventDispatcher\EventStorage\VoidEventStore;
+
 /**
  * Class DomainEventDispatcher
  *
@@ -33,6 +40,11 @@ class DomainEventDispatcher implements DomainEventDispatcherInterface
      * @var array
      */
     private $listenerTypes = [];
+
+    /**
+     * @var EventStoreInterface
+     */
+    private $eventStore;
 
     /**
      * @return self
@@ -107,6 +119,14 @@ class DomainEventDispatcher implements DomainEventDispatcherInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function setEventStore(EventStoreInterface $eventStore)
+    {
+        $this->eventStore = $eventStore;
+    }
+
+    /**
      * Get the listeners for a particular event
      *
      * @param object $event
@@ -153,6 +173,10 @@ class DomainEventDispatcher implements DomainEventDispatcherInterface
         }
 
         $this->eventInvocationMap->addEventListenerSet($set);
+
+        if (! ($event instanceof DisposableEventInterface)) {
+            $this->eventStore->append($event);
+        }
     }
 
     /**
@@ -235,5 +259,6 @@ class DomainEventDispatcher implements DomainEventDispatcherInterface
     final protected function __construct()
     {
         $this->eventInvocationMap = new EventInvocationMap();
+        $this->eventStore = new VoidEventStore();
     }
 }

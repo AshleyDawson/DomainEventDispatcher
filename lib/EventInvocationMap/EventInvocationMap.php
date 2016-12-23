@@ -1,13 +1,13 @@
 <?php
 
-namespace AshleyDawson\DomainEventDispatcher;
+namespace AshleyDawson\DomainEventDispatcher\EventInvocationMap;
 
 /**
  * Class EventInvocationMap
  *
  * Used to map the listeners that have been invoked by events
  *
- * @package AshleyDawson\DomainEventDispatcher
+ * @package AshleyDawson\DomainEventDispatcher\EventInvocationMap
  */
 class EventInvocationMap
 {

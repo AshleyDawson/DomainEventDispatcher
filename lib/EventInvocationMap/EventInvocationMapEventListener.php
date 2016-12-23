@@ -1,6 +1,6 @@
 <?php
 
-namespace AshleyDawson\DomainEventDispatcher;
+namespace AshleyDawson\DomainEventDispatcher\EventInvocationMap;
 
 /**
  * Class EventInvocationMapEventListener

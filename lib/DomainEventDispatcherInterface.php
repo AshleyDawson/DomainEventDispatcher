@@ -2,6 +2,9 @@
 
 namespace AshleyDawson\DomainEventDispatcher;
 
+use AshleyDawson\DomainEventDispatcher\EventInvocationMap\EventInvocationMap;
+use AshleyDawson\DomainEventDispatcher\EventStorage\EventStoreInterface;
+
 /**
  * Interface DomainEventDispatcherInterface
  *
@@ -42,4 +45,12 @@ interface DomainEventDispatcherInterface
      * @return EventInvocationMap
      */
     public function getEventInvocationMap();
+
+    /**
+     * Set the event store for the dispatcher
+     *
+     * @param EventStoreInterface $eventStore
+     * @return void
+     */
+    public function setEventStore(EventStoreInterface $eventStore);
 }

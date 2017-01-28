@@ -256,7 +256,7 @@ class DomainEventDispatcher implements DomainEventDispatcherInterface
     /**
      * Constructor
      */
-    final protected function __construct()
+    final private function __construct()
     {
         $this->eventInvocationMap = new EventInvocationMap();
         $this->eventStore = new VoidEventStore();
